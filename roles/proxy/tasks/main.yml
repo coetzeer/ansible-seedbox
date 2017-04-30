@@ -1,6 +1,6 @@
 ---
 - name: Install squid
-  apt: pkg={{ item }} state=installed update_cache=yes
+  package: name={{ item }} state=installed
   with_items:
     - squid3
 
