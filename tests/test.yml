@@ -19,7 +19,7 @@
 - hosts: all
   vars:
     download_directory: /var/lib/rtorrent
-    nfs_server: "{{[ansible_eth0]['ipv4']['address']}}"
+    nfs_server: "{{ansible_default_ipv4['address']}}"
     nfs_mount: /tmp/nfs_server_dir
     web_user: ADD_WEB_USER_HERE
     web_password: ADD_WEB_PASSWORD_HERE
