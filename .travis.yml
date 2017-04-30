@@ -14,8 +14,16 @@ env:
     version: 16.04
     init: /sbin/init
     run_opts: ""
+  - distribution: ubuntu
+    version: 17.04
+    init: /sbin/init
+    run_opts: ""
   - distribution: debian
-    version: 8
+    version: 7
+    init: /sbin/init
+    run_opts: ""
+  - distribution: debian
+    version: 9
     init: /sbin/init
     run_opts: ""
 
@@ -31,13 +39,16 @@ before_install:
 script:
   - container_id=$(mktemp)
   # Run container in detached state.
-  - 'sudo docker run --detach --volume="${PWD}/roles":/mnt:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
+  - 'sudo docker run --detach --volume="${PWD}":/mnt:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
 
-  # Install required Galaxy roles.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -r requirements.yml'
+  # run setup to sanity check
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /mnt'
 
   # run setup to sanity check
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible all -m setup'
+
+  # Install required Galaxy roles.
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -r /mnt/requirements.yml'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /mnt/tests/test.yml --syntax-check'
