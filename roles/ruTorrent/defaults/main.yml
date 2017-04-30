@@ -1,2 +1,3 @@
 ---
 rutorrent_install_dir: /var/www/rutorrent
+rutorrent_install_dir_tmp: "/var/www/rutorren/tmp"
