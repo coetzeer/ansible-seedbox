@@ -7,7 +7,7 @@
 
   pre_tasks:
     - name: Create nfs server directory
-      file: "{{nfs_mount}}"
+      file: path="{{nfs_mount}}"
 
   roles:
     - role: geerlingguy.nfs
