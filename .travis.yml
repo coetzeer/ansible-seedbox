@@ -16,7 +16,7 @@ env:
     run_opts: ""
   - distribution: ubuntu
     version: 17.04
-    init: ""
+    init: "/bin/bash"
     run_opts: ""
   - distribution: debian
     version: 8

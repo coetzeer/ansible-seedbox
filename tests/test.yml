@@ -34,6 +34,7 @@
     - role: common
     - role: proxy
     - role: vpnclient
+      when: vpn_username is defined
     - role: nfsclient
     - role: nginx
     - role: xmlrpc

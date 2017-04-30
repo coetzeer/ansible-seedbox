@@ -1,8 +1,11 @@
 FROM debian:9
 RUN apt-get update
 
+RUN dpkg-divert --local --rename --add /sbin/initctl
+RUN ln -sf /bin/true /sbin/initctl
+
 # Install Ansible
-RUN apt-get install python-pip python-dev git python-yaml python-paramiko -y
+RUN apt-get ifupdown dbus pciutils kmod iw sudo openssh-server curl lsb-release install python-pip python-dev git python-yaml python-paramiko -y
 RUN pip install jinja2
 
 RUN cd ~ && \
@@ -17,3 +20,8 @@ RUN cd ~ && \
 
 # Install Ansible inventory file
 RUN echo "[local]\nlocalhost ansible_connection=local" > /etc/ansible/hosts
+
+RUN ln -s /lib/systemd/system/systemd-logind.service /etc/systemd/system/multi-user.target.wants/systemd-logind.service
+RUN mkdir /etc/systemd/system/sockets.target.wants/
+RUN ln -s /lib/systemd/system/dbus.socket /etc/systemd/system/sockets.target.wants/dbus.socket
+RUN systemctl set-default multi-user.target
