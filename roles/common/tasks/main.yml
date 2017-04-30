@@ -37,6 +37,8 @@
     - unzip
     - git
 
+- group: name=downloads state=present
+
 - user: name=pi shell=/bin/bash groups=downloads append=yes
 
 - name: create nfs mount
