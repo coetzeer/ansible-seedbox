@@ -51,11 +51,11 @@ script:
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -r /mnt/requirements.yml'
 
   # Ansible syntax check.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm cd /mnt/tests && ansible-playbook test.yml --syntax-check'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "cd /mnt/tests ; ansible-playbook test.yml --syntax-check"'
 
   # Test role.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm cd /mnt/tests && ansible-playbook test.yml'
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm cd /mnt/tests && ansible-playbook test.yml'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "cd /mnt/tests ; ansible-playbook test.yml"'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "cd /mnt/tests ; ansible-playbook test.yml"'
 
   # Test role idempotence.
   - >
