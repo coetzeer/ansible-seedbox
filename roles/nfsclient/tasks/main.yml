@@ -1,11 +1,11 @@
 ---
-- name: Install packages
+- name: Install nfs client packages
   apt: pkg={{ item }} state=installed update_cache=yes
   when: ansible_os_family != 'RedHat'
   with_items:
     - nfs-common
 
-- name: Install packages Redhat
+- name: Install nfs client packages Redhat
   package: name={{ item }} state=installed
   when: ansible_os_family == 'RedHat'
   with_items:

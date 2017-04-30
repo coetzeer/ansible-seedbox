@@ -36,6 +36,7 @@
     - zip
     - unzip
     - git
+    - epel-release
 
 - group: name=downloads state=present
 
