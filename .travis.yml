@@ -16,7 +16,7 @@ env:
     run_opts: ""
   - distribution: ubuntu
     version: 17.04
-    init: /sbin/init
+    init: ""
     run_opts: ""
   - distribution: debian
     version: 8
