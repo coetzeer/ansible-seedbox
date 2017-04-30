@@ -18,18 +18,15 @@
 - name: Checkout ruTorrent from git
   git: repo=https://github.com/Novik/ruTorrent.git dest="{{ rutorrent_install_dir }}" force=true
 
-- name: Checkout ruTorrent mobile from git
-  git: repo=https://github.com/xombiemp/rutorrentMobile.git dest="{{ rutorrent_install_dir }}/plugins/mobile"
+- name: Checkout ruTorrent plugins
+  git:
+    repo: "https://github.com/nelu/rutorrent-thirdparty-plugins.git"
+    dest: "{{ rutorrent_install_dir }}/plugins/"
 
-- name: Checkout ruTorrent plugins from subversion
-  subversion:
-    repo: "http://svn.rutorrent.org/svn/{{ item }}/trunk/"
-    dest: "{{ rutorrent_install_dir }}/plugins/{{ item }}"
-  with_items:
-    - filemanager
-    # - fileshare
-    # - fileupload
-    # - mediastream
+- name: Checkout ruTorrent mobile from git
+  git:
+    repo: https://github.com/xombiemp/rutorrentMobile.git
+    dest: "{{ rutorrent_install_dir }}/plugins/mobile"
 
 - name: Apply config template
   template: src=config.php dest="{{ rutorrent_install_dir }}/conf/config.php" owner=www-data group=www-data
