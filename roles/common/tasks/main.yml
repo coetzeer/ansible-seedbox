@@ -36,3 +36,14 @@
     - zip
     - unzip
     - git
+
+- user: name=pi shell=/bin/bash groups=downloads append=yes
+
+- name: create nfs mount
+  file:
+    path: /u01
+    state: directory
+    mode: "u+rwx,g+rwxs,o-rwx"
+    owner: root
+    group: downloads
+    recurse: true
