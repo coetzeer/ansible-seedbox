@@ -87,3 +87,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+group_vars/torrent1.yml
+group_vars/torrent2.yml
+group_vars/torrent3.yml
