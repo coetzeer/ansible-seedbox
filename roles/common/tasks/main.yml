@@ -1,7 +1,7 @@
 ---
 
 - name: Install deps and utils
-  apt: pkg={{ item }} state=installed update_cache=yes
+  package: name={{ item }} state=latest
   with_items:
     - automake
     - build-essential
