@@ -2,7 +2,7 @@ FROM debian:8
 RUN apt-get update
 
 # Install Ansible
-RUN apt-get install python-pip python-dev git python-yaml python-paramiko -y
+RUN apt-get install ifupdown dbus pciutils kmod iw sudo openssh-server curl lsb-release python-pip python-dev git python-yaml python-paramiko -y
 RUN pip install jinja2
 
 RUN cd ~ && \

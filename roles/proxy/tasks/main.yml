@@ -4,6 +4,12 @@
   with_items:
     - squid3
 
+- name: Install squid Redhat
+  package: name={{ item }} state=installed
+  when: ansible_os_family == 'RedHat'
+  with_items:
+    - squid
+
 - name: rename original squid config
   command: mv /etc/squid3/squid.conf /etc/squid3/squid.conf.original
   args:
