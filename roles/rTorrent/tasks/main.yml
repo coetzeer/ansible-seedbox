@@ -1,49 +1,49 @@
 ---
 
-- block:
-  - name: Uninstall rtorrent package
-    apt: pkg={{ item }} state=absent update_cache=yes
-    with_items:
-      - rtorrent
-
-  - name: git clone rakshasa/rtorrent
-    git:
-      repo: "https://github.com/rakshasa/rtorrent.git"
-      dest: /usr/src/rtorrent
-
-  - name: Autogen rtorrent
-    command: "/bin/sh autogen.sh"
-    args:
-      chdir: /usr/src/rtorrent
-      creates: /usr/src/rtorrent/configure
-
-  - name: Configure rtorrent
-    command: "/bin/sh configure --with-xmlrpc-c"
-    args:
-      chdir: /usr/src/rtorrent
-      creates: /usr/src/rtorrent/Makefile
-
-  - name: Make rtorrent (Another long one)
-    command: "/usr/bin/make"
-    args:
-      chdir: /usr/src/rtorrent
-      creates: /usr/src/rtorrent/src/rtorrent
-
-  - name: Install rtorrent
-    command: "/usr/bin/make install"
-    args:
-      chdir: /usr/src/rtorrent
-      creates: /usr/local/bin/rtorrent
-
-  - name: ldconfig
-    command: "/sbin/ldconfig"
-  when: ansible_lsb.id != "Raspbian"
+# - block:
+#   - name: Uninstall rtorrent package
+#     apt: pkg={{ item }} state=absent update_cache=yes
+#     with_items:
+#       - rtorrent
+#
+#   - name: git clone rakshasa/rtorrent
+#     git:
+#       repo: "https://github.com/rakshasa/rtorrent.git"
+#       dest: /usr/src/rtorrent
+#
+#   - name: Autogen rtorrent
+#     command: "/bin/sh autogen.sh"
+#     args:
+#       chdir: /usr/src/rtorrent
+#       creates: /usr/src/rtorrent/configure
+#
+#   - name: Configure rtorrent
+#     command: "/bin/sh configure --with-xmlrpc-c"
+#     args:
+#       chdir: /usr/src/rtorrent
+#       creates: /usr/src/rtorrent/Makefile
+#
+#   - name: Make rtorrent (Another long one)
+#     command: "/usr/bin/make"
+#     args:
+#       chdir: /usr/src/rtorrent
+#       creates: /usr/src/rtorrent/src/rtorrent
+#
+#   - name: Install rtorrent
+#     command: "/usr/bin/make install"
+#     args:
+#       chdir: /usr/src/rtorrent
+#       creates: /usr/local/bin/rtorrent
+#
+#   - name: ldconfig
+#     command: "/sbin/ldconfig"
+#   when: ansible_lsb.id != "Raspbian"
 
 - name: Install rtorrent package only on Raspbian
   apt: pkg={{ item }} update_cache=yes
   with_items:
     - rtorrent
-  when: ansible_lsb.id == "Raspbian"
+  #when: ansible_lsb.id == "Raspbian"
 
 - name: Install screen
   apt: pkg={{ item }} state=installed update_cache=yes
