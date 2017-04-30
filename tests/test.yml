@@ -1,0 +1,44 @@
+---
+- hosts: all
+  vars:
+    nfs_mount: /tmp/nfs_server_dir
+    nfs_exports:
+      - "{{nfs_mount}}"
+
+  pre_tasks:
+    - name: Create nfs server directory
+      file: "{{nfs_mount}}"
+
+  roles:
+    - role: geerlingguy.nfs
+
+  post_tasks:
+    - name: restart nfs
+      service: "name={{ nfs_server_daemon }} state=restarted"
+
+- hosts: all
+  vars:
+    download_directory: /var/lib/rtorrent
+    nfs_server: localhost
+    nfs_mount: /tmp/nfs_server_dir
+    web_user: ADD_WEB_USER_HERE
+    web_password: ADD_WEB_PASSWORD_HERE
+
+
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+      when: ansible_pkg_mgr == "apt"
+
+  roles:
+    - role: common
+    - role: proxy
+    - role: vpnclient
+    - role: nfsclient
+    - role: nginx
+    - role: xmlrpc
+    - role: libtorrent
+    - role: rTorrent
+    - role: ruTorrent
+    - role: rpimonitor
+      when: ansible_lsb.id == "Raspbian"

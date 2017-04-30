@@ -1,0 +1,18 @@
+# rtorrent startup script
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description="rTorrent - BitTorrent client"
+Requires=vpnclient.service
+
+[Service]
+Environment=RTORRENTRC=/etc/rtorrent/rtorrent.rc
+Restart=on-failure
+RestartSec=10
+#ExecStartPre=/etc/rtorrent/prestart
+ExecStopPost=/etc/rtorrent/prestop
+ExecStart=/usr/bin/screen -Dm -S rtorrent sh -c 'rtorrent -n -o import=/etc/rtorrent/rtorrent.rc'
+Group={{ run_user }}
+User={{ run_user }}
+#Type=forking

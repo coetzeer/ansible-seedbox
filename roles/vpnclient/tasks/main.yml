@@ -1,0 +1,46 @@
+---
+
+- name: Install openvpn
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - openvpn
+
+- name: Create directory structure
+  copy: dest=/etc/openvpn/{{ item }} src={{ item }}
+  with_items:
+    - "ca.crt"
+    - "AT - Vienna @tigervpn.com.ovpn"
+    - "CA - Montreal @tigervpn.com.ovpn"
+    - "CA - Toronto @tigervpn.com.ovpn"
+    - "CH - Zurich @tigervpn.com.ovpn"
+    - "DE - Frankfurt @tigervpn.com.ovpn"
+    - "DK - Copenhagen @tigervpn.com.ovpn"
+    - "ES - Madrid @tigervpn.com.ovpn"
+    - "GB - London @tigervpn.com.ovpn"
+    - "NL - Amsterdam @tigervpn.com.ovpn"
+    - "RO - Bucharest @tigervpn.com.ovpn"
+    - "US - Atlanta @tigervpn.com.ovpn"
+    - "US - Denver @tigervpn.com.ovpn"
+    - "US - Los Angeles @tigervpn.com.ovpn"
+    - "US - Miami @tigervpn.com.ovpn"
+    - "US - New York @tigervpn.com.ovpn"
+
+- name: add auth.tx
+  template: src=auth.txt.j2 dest=/etc/openvpn/auth.txt
+  notify: restart vpnclient
+
+- name: apply init script template for openvpn client systemd
+  template: src=vpn.systemd.j2 dest=/etc/systemd/system/vpnclient.service
+  notify: restart vpnclient
+  when: ansible_service_mgr=="systemd"
+
+- name: apply init script template for openvpn client upstart
+  template: src=vpn.upstart.j2 dest=/etc/init/vpnclient.conf
+  notify: restart vpnclient
+  when: ansible_service_mgr=="upstart"
+
+- name: add lookup for location
+  cron: name="location lookup" minute="0" job="curl -s v4.ifconfig.co/json | python -m json.tool > /tmp/country"
+
+- name: restart vpn client if its stopped
+  cron: name="restart vpnclient if its stopped" minute="*/5" job="COUNT=`ip addr | grep tun0 | wc -l` && test  $COUNT -eq 0  && systemctl restart vpnclient"

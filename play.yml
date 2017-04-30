@@ -1,0 +1,33 @@
+---
+- hosts: all
+  remote_user: pi
+  become: True
+  become_user: root
+  vars:
+    hostname: '{{ inventory_hostname }}'
+    https_port: 443
+    run_user: www-data
+    web_user: ADD_WEB_USER_HERE
+    web_password: ADD_WEB_PASSWORD_HERE
+  pre_tasks:
+    - service: name=vpnclient state=stopped
+      ignore_errors: true
+    - service: name=nginx state=stopped
+      ignore_errors: true
+    - service: name=php5-fpm state=stopped
+      ignore_errors: true
+  roles:
+    - common
+    - proxy
+    - vpnclient
+    - nfsclient
+    - nginx
+    - xmlrpc
+    - libtorrent
+    - rTorrent
+    - ruTorrent
+    - rpimonitor
+  post_tasks:
+    - service: name=vpnclient state=started
+    - service: name=nginx state=started
+    - service: name=php5-fpm state=started

@@ -1,0 +1,16 @@
+---
+- name: Install squid
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - squid3
+
+- name: rename original squid config
+  command: mv /etc/squid3/squid.conf /etc/squid3/squid.conf.original
+  args:
+    creates: /etc/squid3/squid.conf.original
+
+- name: Apply squid config
+  template:
+    src: squid.conf.j2
+    dest: "/etc/squid3/squid.conf"
+  notify: restart squid3

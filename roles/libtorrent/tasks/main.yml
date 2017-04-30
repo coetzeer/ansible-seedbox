@@ -1,0 +1,5 @@
+---
+- name: Install libtorrent package only on Raspbian
+  apt: pkg={{ item }} update_cache=yes
+  with_items:
+    - libtorrent-dev

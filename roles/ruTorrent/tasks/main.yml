@@ -1,0 +1,104 @@
+---
+
+- name: copy ruTorrent update script
+  copy: src=update-rutorrent dest=/usr/local/bin/update-rutorrent mode=0777 force=yes
+
+- name: Make ruTorrent directory
+  file:
+    name: "{{ rutorrent_install_dir }}"
+    state: directory
+
+# - name: Download ruTorrent to /var/www/rutorrent
+#   command: bash -e /usr/local/bin/update-rutorrent
+#   args:
+#     creates: /var/www/rutorrent/conf
+
+- file: path="/usr/share/pydio" state=absent
+
+- name: Checkout ruTorrent from git
+  git: repo=https://github.com/Novik/ruTorrent.git dest="{{ rutorrent_install_dir }}" force=true
+
+- name: Checkout ruTorrent mobile from git
+  git: repo=https://github.com/xombiemp/rutorrentMobile.git dest="{{ rutorrent_install_dir }}/plugins/mobile"
+
+- name: Checkout ruTorrent plugins from subversion
+  subversion:
+    repo: "http://svn.rutorrent.org/svn/{{ item }}/trunk/"
+    dest: "{{ rutorrent_install_dir }}/plugins/{{ item }}"
+  with_items:
+    - filemanager
+    # - fileshare
+    # - fileupload
+    # - mediastream
+
+- name: Apply config template
+  template: src=config.php dest="{{ rutorrent_install_dir }}/conf/config.php" owner=www-data group=www-data
+
+- name: Copy autowatch config file
+  copy: src=autotools-conf.php dest="{{ rutorrent_install_dir }}/plugins/autotools/conf.php" force=yes
+
+- name: ffmpeg ppa
+  apt_repository: repo='ppa:mc3man/trusty-media'
+  when: ansible_distribution=="Ubuntu"
+
+- name: ffmpeg repo jessie
+  apt_repository:
+    repo: "deb http://www.deb-multimedia.org jessie main non-free"
+    state: present
+    filename: deb_multimedia
+  when: ansible_distribution=="Debian" and ansible_distribution_major_version|int=="8"
+
+- name: ffmpeg repo jessie backports
+  apt_repository:
+    repo: "deb http://www.deb-multimedia.org jessie-backports main"
+    state: present
+    filename: deb_multimedia
+    update_cache: true
+  when: ansible_distribution=="Debian" and ansible_distribution_major_version|int=="8"
+
+- name: ffmpeg repo stretch
+  apt_repository:
+    repo: "deb http://www.deb-multimedia.org stretch main non-free"
+    state: present
+    filename: deb_multimedia
+    update_cache: true
+  when: ansible_distribution=="Debian" and ansible_distribution_major_version|int=="9"
+
+- name: install ffmpeg
+  apt: name=ffmpeg state=installed update_cache=yes
+  when: ansible_distribution=="Debian" and ansible_distribution_major_version|int>="8"
+
+- name: Copy screenshots config file
+  copy: src=screenshots-conf.php dest="{{ rutorrent_install_dir }}/plugins/screenshots/conf.php" force=yes
+
+- name: Copy unpack config file
+  copy: src=unpack-conf.php dest="{{ rutorrent_install_dir }}/plugins/unpack/conf.php" force=yes
+
+- name: Create password
+  command: "htpasswd -cb /etc/nginx/passwd {{ web_user }} {{ web_password }}"
+  when: web_user is defined
+
+- name: Copy over html files
+  copy: src=auth.tar.gz dest=/tmp/auth.tar.gz
+
+- name: Extract auth components
+  command: "/usr/bin/bsdtar -xf /tmp/auth.tar.gz --strip-components 1"
+  args:
+    creates: "/var/www/login.html"
+    chdir: "/var/www"
+
+- name: Set Perms on ruTorrent directory
+  file:
+    name: /var/www
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+
+- name: Set Perms on ruTorrent directory
+  file:
+    name: /u02
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data

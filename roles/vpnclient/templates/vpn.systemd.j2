@@ -1,0 +1,14 @@
+[Install]
+WantedBy=multi-user.target
+
+[Unit]
+Description="OpenVPN autostart on boot upstart job"
+#Requires=networking.service,local-fs.target
+After=network.target auditd.service
+
+
+[Service]
+WorkingDirectory=/etc/openvpn
+Restart=on-failure
+ExecStopPost=sleep 5
+ExecStart=/usr/sbin/openvpn --status /var/run/openvpn.client.status 10 --cd /etc/openvpn --config "/etc/openvpn/{{ vpn_client_file }}" --syslog openvpn

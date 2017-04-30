@@ -1,0 +1,30 @@
+---
+- name: Add rpimonitor key
+  command: "apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 2C0D3C0F"
+
+- name: get repo file
+  command: "wget https://raw.githubusercontent.com/XavierBerger/RPi-Monitor/master/src/etc/apt/sources.list.d/rpimonitor.list -O /etc/apt/sources.list.d/rpimonitor.list"
+  args:
+    chdir: /etc/apt/sources.list.d
+    creates: /etc/apt/sources.list.d/rpimonitor.list
+
+- apt: name=rpimonitor update_cache=yes state=latest
+  notify: restart rpimonitor
+
+- name: Update rpimonitor
+  command: "/etc/init.d/rpimonitor update"
+
+- name: Update rpimonitor install_auto_package_status_update
+  command: "/etc/init.d/rpimonitor install_auto_package_status_update"
+
+- lineinfile: dest=/etc/rpimonitor/data.conf regexp=^web.addons.2.name=Top3 line=web.addons.2.name=Top3
+  notify: restart rpimonitor
+
+- lineinfile: dest=/etc/rpimonitor/data.conf regexp=^web.addons.2.addons=top3 line=web.addons.2.addons=top3
+  notify: restart rpimonitor
+
+- name: get repo file
+  command: "cp /usr/share/rpimonitor/web/addons/top3/top3.cron /etc/cron.d/top3"
+  args:
+    chdir: /etc/cron.d
+    creates: /etc/cron.d/top3

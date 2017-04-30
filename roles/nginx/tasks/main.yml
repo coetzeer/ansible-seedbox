@@ -1,0 +1,55 @@
+# nginx
+---
+
+# - name: Add php5 PPA
+#   apt_repository: repo='ppa:ondrej/php5'
+#
+# - name: Add nginx PPA
+#   apt_repository: repo='ppa:nginx/stable'
+
+- user: name="run_user" shell=/usr/sbin/nologin
+
+- name: Install packages
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items:
+    - apache2-utils
+    - nginx
+    - ssl-cert
+    - php5
+    - php5-fpm
+    - php5-curl
+    - php5-gd
+    - php5-geoip
+    - php5-mcrypt
+    - php5-mysql
+  tags:
+    - skip_after_first_run
+
+- name: turn off PHP output buffering
+  ini_file: dest=/etc/php5/fpm/php.ini section=PHP option=output_buffering value=Off
+  notify:
+    - start php5-fpm
+    - restart nginx
+
+- name: use port instead of local socket for php5-fpm
+  ini_file: dest=/etc/php5/fpm/pool.d/www.conf section=www option=listen value=9000
+  notify:
+    - start php5-fpm
+    - restart nginx
+    
+- name: Apply config template
+  template:
+    src: works.conf
+    dest: "/etc/nginx/sites-available/default"
+
+- name: enable mcrypt
+  shell: "php5enmod mcrypt"
+
+- name: Enable nginx conf
+  file:
+    path: "/etc/nginx/sites-enabled/default"
+    state: link
+    src: "/etc/nginx/sites-available/default"
+  notify:
+    - start php5-fpm
+    - restart nginx
