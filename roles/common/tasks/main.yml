@@ -22,17 +22,17 @@
     - unzip
     - git
 
-  - name: Install deps and utils
-    package: name={{ item }} state=latest
-    when: ansible_os_family = 'RedHat'
-    with_items:
-      - automake
-      - bsdtar
-      - curl
-      - git-core
-      - libtool
-      - mediainfo
-      - subversion
-      - zip
-      - unzip
-      - git
+- name: Install deps and utils
+  package: name={{ item }} state=latest
+  when: ansible_os_family = 'RedHat'
+  with_items:
+    - automake
+    - bsdtar
+    - curl
+    - git-core
+    - libtool
+    - mediainfo
+    - subversion
+    - zip
+    - unzip
+    - git
