@@ -12,7 +12,7 @@
 - name: Install packages RedHat
   package: name={{ item }} state=installed
   with_items:
-    - apache2-utils
+    - httpd-tools
     - nginx
     - php
     - php-fpm
@@ -33,10 +33,9 @@
     - php-fpm
     - php-curl
     - php-gd
-    - php-geoip
     - php-mcrypt
     - php-mysql
-  when: ansible_os_family == "Debian" and ansible_distribution_major_version > 15
+  when: ansible_os_family == "Debian" and ansible_distribution_version | version_compare('15.04', '>')
 
 - name: Install packages less than ubuntu 15
   package: name={{ item }} state=installed
@@ -51,7 +50,7 @@
     - php5-geoip
     - php5-mcrypt
     - php5-mysql
-  when: (ansible_os_family == "Debian" and ansible_distribution_major_version <= "15") or ansible_lsb.id == "Raspbian"
+  when: (ansible_os_family == "Debian" and ansible_distribution_version | version_compare('15.04', '<=')) or ansible_lsb.id == "Raspbian"
 
 - name: turn off PHP output buffering
   ini_file: dest=/etc/php5/fpm/php.ini section=PHP option=output_buffering value=Off
