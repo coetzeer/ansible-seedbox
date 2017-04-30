@@ -24,9 +24,7 @@
     dest: "{{ rutorrent_install_dir_tmp }}"
 
 - name: move plugins in place
-  shell: "cp -R {{ rutorrent_install_dir_tmp }}/{{item}} {{ rutorrent_install_dir }}/plugins"
-  args:
-    creates: "{{ rutorrent_install_dir }}/plugins/{{ item }}"
+  shell: "cp -R {{ rutorrent_install_dir_tmp }}/* {{ rutorrent_install_dir }}/plugins"
 
 - name: Checkout ruTorrent mobile from git
   git:
