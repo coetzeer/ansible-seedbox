@@ -23,6 +23,7 @@
     #nfs_mount: /tmp/nfs_server_dir
     web_user: ADD_WEB_USER_HERE
     web_password: ADD_WEB_PASSWORD_HERE
+    run_user: pi
 
 
   pre_tasks:

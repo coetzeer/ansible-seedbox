@@ -15,7 +15,7 @@
 
 - group: name=downloads state=present
 
-- user: name=pi shell=/bin/bash groups=downloads append=yes
+- user: name="{{run_user}}" shell=/bin/bash groups=downloads append=yes
 
 - name: create nfs mount
   file:
