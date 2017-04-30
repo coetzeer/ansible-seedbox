@@ -29,6 +29,21 @@
     - apache2-utils
     - nginx
     - ssl-cert
+    - php
+    - php-fpm
+    - php-curl
+    - php-gd
+    - php-geoip
+    - php-mcrypt
+    - php-mysql
+  when: ansible_os_family == "Debian" and ansible_distribution_major_version > 15
+
+- name: Install packages less than ubuntu 15
+  package: name={{ item }} state=installed
+  with_items:
+    - apache2-utils
+    - nginx
+    - ssl-cert
     - php5
     - php5-fpm
     - php5-curl
@@ -36,13 +51,7 @@
     - php5-geoip
     - php5-mcrypt
     - php5-mysql
-  when: ansible_distribution == "Ubuntu" or ansible_lsb.id == "Raspbian"
-
-- name: Install packages less than ubuntu 15
-  package: name={{ item }} state=installed
-  with_items:
-    - php5
-  when: (ansible_distribution=="Ubuntu" and ansible_distribution_major_version<="15") or ansible_lsb.id == "Raspbian"
+  when: (ansible_os_family == "Debian" and ansible_distribution_major_version <= "15") or ansible_lsb.id == "Raspbian"
 
 - name: turn off PHP output buffering
   ini_file: dest=/etc/php5/fpm/php.ini section=PHP option=output_buffering value=Off
