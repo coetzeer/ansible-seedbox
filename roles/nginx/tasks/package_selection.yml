@@ -1,0 +1,89 @@
+- name: Select Nginx packages Redhat
+  set_fact:
+    php_name: "php"
+    nginx_packages:
+      - httpd-tools
+      - nginx
+      - php
+      - php-fpm
+      - php-curl
+      - php-gd
+      - php-mcrypt
+      - php-mysql
+  when: ansible_os_family == 'RedHat'
+
+# ubuntu block
+- block:
+
+  - name: Select Nginx packages Ubuntu > 15.04
+    set_fact:
+      php_name: "php"
+      nginx_packages:
+        - apache2-utils
+        - nginx
+        - ssl-cert
+        - php
+        - php-fpm
+        - php-curl
+        - php-gd
+        - php-mcrypt
+        - php-mysql
+        - php-mbstring
+        - php-gettext
+    when: ansible_distribution_version | version_compare('15.04', '>')
+
+    - name: Select Nginx packages Ubuntu <= 15.04
+      set_fact:
+        php_name: "php5"
+        nginx_packages:
+          - apache2-utils
+          - nginx
+          - ssl-cert
+          - php5
+          - php5-fpm
+          - php5-curl
+          - php5-gd
+          - php5-geoip
+          - php5-mcrypt
+          - php5-mysql
+      when: ansible_distribution_version | version_compare('15.04', '<=')
+
+  when: ansible_distribution = 'Ubuntu'
+
+
+# Debian block
+- block:
+    - name: Select Nginx packages for Debian
+      set_fact:
+        php_name: "php5"
+        nginx_packages:
+          - apache2-utils
+          - nginx
+          - ssl-cert
+          - php5
+          - php5-fpm
+          - php5-curl
+          - php5-gd
+          - php5-geoip
+          - php5-mcrypt
+          - php5-mysql
+  when: ansible_distribution = 'Debian'
+
+# Rasbian block
+- block:
+    - name: Select Nginx packages for Rasbian
+      set_fact:
+        php_name: "php5"
+        nginx_packages:
+          - apache2-utils
+          - nginx
+          - ssl-cert
+          - php5
+          - php5-fpm
+          - php5-curl
+          - php5-gd
+          - php5-geoip
+          - php5-mcrypt
+          - php5-mysql
+      when: ansible_lsb.id == "Raspbian"
+  when: ansible_lsb is defined
