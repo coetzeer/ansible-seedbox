@@ -2,8 +2,8 @@
 - name: restart nginx
   service: name=nginx state=restarted
 
-- name: restart php5-fpm
-  service: name=php5-fpm state=restarted
+- name: restart php-fpm
+  service: name="{{php_name}}-fpm" state=restarted
 
-- name: start php5-fpm
-  service: name=php5-fpm state=started
+- name: start php-fpm
+  service: name="{{php_name}}-fpm" state=started

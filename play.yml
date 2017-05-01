@@ -14,7 +14,7 @@
       ignore_errors: true
     - service: name=nginx state=stopped
       ignore_errors: true
-    - service: name=php5-fpm state=stopped
+    - service: name=php-fpm state=stopped
       ignore_errors: true
   roles:
     - common
@@ -30,4 +30,4 @@
   post_tasks:
     - service: name=vpnclient state=started
     - service: name=nginx state=started
-    - service: name=php5-fpm state=started
+    - service: name=php-fpm state=started

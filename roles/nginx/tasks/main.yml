@@ -1,68 +1,24 @@
 # nginx
 ---
 
-# - name: Add php5 PPA
-#   apt_repository: repo='ppa:ondrej/php5'
-#
-# - name: Add nginx PPA
-#   apt_repository: repo='ppa:nginx/stable'
+- include: package_selection.yml
 
 - user: name="{{run_user}}" shell=/usr/sbin/nologin
 
-- name: Install packages RedHat
-  package: name={{ item }} state=installed
-  with_items:
-    - httpd-tools
-    - nginx
-    - php
-    - php-fpm
-    - php-curl
-    - php-gd
-    - php-mcrypt
-    - php-mysql
-  when: ansible_os_family == 'RedHat'
-
 - name: Install packages
   package: name={{ item }} state=installed
-  with_items:
-    - apache2-utils
-    - nginx
-    - ssl-cert
-    - php
-    - php-fpm
-    - php-curl
-    - php-gd
-    - php-mcrypt
-    - php-mysql
-    - php-mbstring
-    - php-gettext
-  when: ansible_os_family == "Debian" and ansible_distribution_version | version_compare('15.04', '>')
-
-- name: Install packages less than ubuntu 15
-  package: name={{ item }} state=installed
-  with_items:
-    - apache2-utils
-    - nginx
-    - ssl-cert
-    - php5
-    - php5-fpm
-    - php5-curl
-    - php5-gd
-    - php5-geoip
-    - php5-mcrypt
-    - php5-mysql
-  when: (ansible_os_family == "Debian" and ansible_distribution_version | version_compare('15.04', '<=')) or ansible_lsb.id == "Raspbian"
+  with_items: "{{ nginx_packages }}"
 
 - name: turn off PHP output buffering
-  ini_file: dest=/etc/php5/fpm/php.ini section=PHP option=output_buffering value=Off
+  ini_file: dest="/etc/{{php_name}}/fpm/php.ini" section=PHP option=output_buffering value=Off
   notify:
-    - start php5-fpm
+    - start php-fpm
     - restart nginx
 
-- name: use port instead of local socket for php5-fpm
-  ini_file: dest=/etc/php5/fpm/pool.d/www.conf section=www option=listen value=9000
+- name: use port instead of local socket for php-fpm
+  ini_file: dest="/etc/{{php_name}}/fpm/pool.d/www.conf" section=www option=listen value=9000
   notify:
-    - start php5-fpm
+    - start php-fpm
     - restart nginx
 
 - name: Apply config template
@@ -71,7 +27,7 @@
     dest: "/etc/nginx/sites-available/default"
 
 - name: enable mcrypt
-  shell: "php5enmod mcrypt"
+  shell: "{{php_name}}enmod mcrypt"
 
 - name: Enable nginx conf
   file:
@@ -79,5 +35,5 @@
     state: link
     src: "/etc/nginx/sites-available/default"
   notify:
-    - start php5-fpm
+    - start php-fpm
     - restart nginx

@@ -23,7 +23,7 @@
 
 > **Task:** turn off PHP output buffering
 
-> **Task:** use port instead of local socket for php5-fpm
+> **Task:** use port instead of local socket for php-fpm
 
 > **Task:** Apply config template
 
