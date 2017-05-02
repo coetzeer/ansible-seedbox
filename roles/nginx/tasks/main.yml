@@ -9,6 +9,14 @@
   notify:
     - restart nginx
 
+- name: ls the /etc dir
+  shell: "ls -lah /etc/"
+  register: ls_etc
+  when: ansible_os_family == 'RedHat'
+
+- debug: var=ls_etc
+  when: ansible_os_family == 'RedHat'
+
 - name: start nginx to create dirs
   service: name=nginx state=started
   when: ansible_os_family == 'RedHat'
