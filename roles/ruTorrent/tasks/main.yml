@@ -41,9 +41,13 @@
   copy: src=autotools-conf.php dest="{{ rutorrent_install_dir }}/plugins/autotools/conf.php" force=yes
   changed_when: false
 
-- name: ffmpeg ppa
+- name: ffmpeg ppa for ubuntu <= 14.04
   apt_repository: repo='ppa:mc3man/trusty-media'
-  when: ansible_distribution=="Ubuntu"
+  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('14.04', '<=')
+
+- name: ffmpeg ppa for ubuntu > 14.04
+  apt_repository: repo='ppa:jonathonf/ffmpeg-3'
+  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('14.04', '>')
 
 - name: ffmpeg repo jessie
   apt_repository:

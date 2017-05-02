@@ -6,6 +6,16 @@
 - name: Install packages
   package: name={{ item }} state=installed
   with_items: "{{ nginx_packages }}"
+  notify:
+    - restart nginx
+
+- name: start nginx to create dirs
+  service: name=nginx state=started
+  when: ansible_os_family == 'RedHat'
+
+- name: stop nginx
+  service: name=nginx state=stopped
+  when: ansible_os_family == 'RedHat'
 
 - name: turn off PHP output buffering
   ini_file: dest="/etc/{{php_name}}/fpm/php.ini" section=PHP option=output_buffering value=Off

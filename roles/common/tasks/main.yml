@@ -40,7 +40,12 @@
 
 - group: name=downloads state=present
 
-- user: name="{{ run_user }}" shell=/bin/bash groups=downloads append=yes
+- user:
+    name: "{{ run_user }}"
+    shell: /bin/false
+    groups: downloads
+    append: yes
+    system: yes
 
 - name: create nfs mount
   file:
