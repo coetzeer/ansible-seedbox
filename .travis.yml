@@ -46,9 +46,6 @@ script:
   - 'sudo docker run --detach --volume="${PWD}":/mnt:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
 
   # run setup to sanity check
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /mnt'
-
-  # run setup to sanity check
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible all -m setup'
 
   # Install required Galaxy roles.
@@ -59,6 +56,8 @@ script:
 
   # Test role.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "cd /mnt/tests ; ansible-playbook test.yml"'
+
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm date'
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm bash -c "cd /mnt/tests ; ansible-playbook test.yml"'
 
   # Test role idempotence.
