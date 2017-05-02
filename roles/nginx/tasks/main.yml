@@ -8,21 +8,12 @@
   notify:
     - restart nginx
 
-- name: ls the /etc dir
-  shell: "ls -lah /etc/nginx"
-  register: ls_etc
+- name: create sites-available
+  file: path="/etc/nginx/{{ item }}" state="directory" mode="0644"
   when: ansible_os_family == 'RedHat'
-
-- debug: var=ls_etc
-  when: ansible_os_family == 'RedHat'
-
-- name: start nginx to create dirs
-  service: name=nginx state=started
-  when: ansible_os_family == 'RedHat'
-
-- name: stop nginx
-  service: name=nginx state=stopped
-  when: ansible_os_family == 'RedHat'
+  with_items:
+    - "/etc/nginx/sites-enabled"
+    - "/etc/nginx/sites-available"
 
 - name: turn off PHP output buffering
   ini_file: dest="/etc/{{php_name}}/fpm/php.ini" section=PHP option=output_buffering value=Off
