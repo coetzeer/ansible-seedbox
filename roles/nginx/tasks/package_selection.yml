@@ -32,21 +32,21 @@
         - php-gettext
     when: ansible_distribution_version | version_compare('15.04', '>')
 
-    - name: Select Nginx packages Ubuntu <= 15.04
-      set_fact:
-        php_name: "php5"
-        nginx_packages:
-          - apache2-utils
-          - nginx
-          - ssl-cert
-          - php5
-          - php5-fpm
-          - php5-curl
-          - php5-gd
-          - php5-geoip
-          - php5-mcrypt
-          - php5-mysql
-      when: ansible_distribution_version | version_compare('15.04', '<=')
+  - name: Select Nginx packages Ubuntu <= 15.04
+    set_fact:
+      php_name: "php5"
+      nginx_packages:
+        - apache2-utils
+        - nginx
+        - ssl-cert
+        - php5
+        - php5-fpm
+        - php5-curl
+        - php5-gd
+        - php5-geoip
+        - php5-mcrypt
+        - php5-mysql
+    when: ansible_distribution_version | version_compare('15.04', '<=')
 
   when: ansible_distribution = 'Ubuntu'
 
