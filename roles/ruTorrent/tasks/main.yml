@@ -17,6 +17,7 @@
 
 - name: Checkout ruTorrent from git
   git: repo=https://github.com/Novik/ruTorrent.git dest="{{ rutorrent_install_dir }}" force=true
+  changed_when: false
 
 - name: Checkout ruTorrent plugins
   git:
@@ -25,6 +26,7 @@
 
 - name: move plugins in place
   shell: "cp -R {{ rutorrent_install_dir_tmp }}/* {{ rutorrent_install_dir }}/plugins"
+  changed_when: false
 
 - name: Checkout ruTorrent mobile from git
   git:
@@ -33,9 +35,11 @@
 
 - name: Apply config template
   template: src=config.php dest="{{ rutorrent_install_dir }}/conf/config.php" owner=www-data group=www-data
+  changed_when: false
 
 - name: Copy autowatch config file
   copy: src=autotools-conf.php dest="{{ rutorrent_install_dir }}/plugins/autotools/conf.php" force=yes
+  changed_when: false
 
 - name: ffmpeg ppa
   apt_repository: repo='ppa:mc3man/trusty-media'
@@ -68,15 +72,44 @@
   apt: name=ffmpeg state=installed update_cache=yes
   when: ansible_distribution=="Debian" and ansible_distribution_major_version|int>="8"
 
+# https://www.vultr.com/docs/how-to-install-ffmpeg-on-centos
+# On CentOS 7, you can install the Nux Dextop YUM repo with the following commands:
+#
+# sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+# sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+# For CentOS 6, you need to install another release:
+#
+# sudo rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+# sudo rpm -Uvh http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm
+
+- name: Install nux desktop key
+  shell: rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+  when: ansible_os_family == 'RedHat'
+
+- name: Select Nginx packages Redhat 7
+  yum:
+    name: "http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm"
+    state: present
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int == "7"
+
+- name: Select Nginx packages Redhat 6
+  yum:
+    name: "http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm"
+    state: present
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int == "6"
+
 - name: Copy screenshots config file
   copy: src=screenshots-conf.php dest="{{ rutorrent_install_dir }}/plugins/screenshots/conf.php" force=yes
+  changed_when: false
 
 - name: Copy unpack config file
   copy: src=unpack-conf.php dest="{{ rutorrent_install_dir }}/plugins/unpack/conf.php" force=yes
+  changed_when: false
 
 - name: Create password
   command: "htpasswd -cb /etc/nginx/passwd {{ web_user }} {{ web_password }}"
   when: web_user is defined
+  changed_when: false
 
 - name: Copy over html files
   copy: src=auth.tar.gz dest=/tmp/auth.tar.gz
@@ -94,6 +127,7 @@
     recurse: yes
     owner: www-data
     group: www-data
+  changed_when: false
 
 - name: Set Perms on ruTorrent directory
   file:

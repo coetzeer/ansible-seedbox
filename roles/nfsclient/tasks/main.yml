@@ -13,10 +13,6 @@
 
 - service: name=rpcbind state=restarted
 
-- group: name=downloads state=present
-
-- user: name="{{run_user}}" shell=/bin/bash groups=downloads append=yes
-
 - name: create nfs mount
   file:
     path: /u01

@@ -1,6 +1,10 @@
 ---
 sudo: required
 
+# matrix:
+#    - ANSIBLE_VERSION=v2.3.0.0-1
+#    - ANSIBLE_VERSION=v2.2.2.0-1
+
 env:
   - distribution: centos
     version: 7

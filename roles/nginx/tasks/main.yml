@@ -3,8 +3,6 @@
 
 - include: package_selection.yml
 
-- user: name="{{run_user}}" shell=/usr/sbin/nologin
-
 - name: Install packages
   package: name={{ item }} state=installed
   with_items: "{{ nginx_packages }}"
@@ -28,6 +26,7 @@
 
 - name: enable mcrypt
   shell: "{{php_name}}enmod mcrypt"
+  changed_when: false
 
 - name: Enable nginx conf
   file:
