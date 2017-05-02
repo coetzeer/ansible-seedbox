@@ -48,7 +48,7 @@
         - php5-mysql
     when: ansible_distribution_version | version_compare('15.04', '<=')
 
-  when: ansible_distribution = 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu'
 
 
 # Debian block
