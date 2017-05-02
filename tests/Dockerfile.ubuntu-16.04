@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 RUN apt-get update
 
 # Install Ansible
-RUN apt-get install python-pip python-dev git python-yaml python-paramiko -y
+RUN apt-get install dbus python-pip python-dev git python-yaml python-paramiko -y
 RUN pip install jinja2
 
 RUN cd ~ && \

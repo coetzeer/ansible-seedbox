@@ -41,13 +41,13 @@
   copy: src=autotools-conf.php dest="{{ rutorrent_install_dir }}/plugins/autotools/conf.php" force=yes
   changed_when: false
 
-- name: ffmpeg ppa for ubuntu <= 14.04
+- name: ffmpeg ppa for ubuntu 14.04
   apt_repository: repo='ppa:mc3man/trusty-media'
-  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('14.04', '<=')
+  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('14.04', '==')
 
-- name: ffmpeg ppa for ubuntu > 14.04
+- name: ffmpeg ppa for ubuntu 16.04
   apt_repository: repo='ppa:jonathonf/ffmpeg-3'
-  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('14.04', '>')
+  when: ansible_distribution=="Ubuntu" and ansible_distribution_version | version_compare('16.04', '==')
 
 - name: ffmpeg repo jessie
   apt_repository:
@@ -74,7 +74,7 @@
 
 - name: install ffmpeg
   apt: name=ffmpeg state=installed update_cache=yes
-  when: ansible_distribution=="Debian" and ansible_distribution_major_version|int>="8"
+  when: ansible_distribution=="Debian" or ansible_distribution=="Ubuntu"
 
 # https://www.vultr.com/docs/how-to-install-ffmpeg-on-centos
 # On CentOS 7, you can install the Nux Dextop YUM repo with the following commands:
@@ -101,6 +101,10 @@
     name: "http://li.nux.ro/download/nux/dextop/el6/x86_64/nux-dextop-release-0-2.el6.nux.noarch.rpm"
     state: present
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version|int == "6"
+
+- name: install ffmpeg Redhat
+  package: name=ffmpeg state=installed
+  when: ansible_os_family == 'RedHat'
 
 - name: Copy screenshots config file
   copy: src=screenshots-conf.php dest="{{ rutorrent_install_dir }}/plugins/screenshots/conf.php" force=yes

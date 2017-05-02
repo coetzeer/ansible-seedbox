@@ -1,6 +1,5 @@
 # nginx
 ---
-
 - include: package_selection.yml
 
 - name: Install packages
@@ -10,7 +9,7 @@
     - restart nginx
 
 - name: ls the /etc dir
-  shell: "ls -lah /etc/"
+  shell: "ls -lah /etc/nginx"
   register: ls_etc
   when: ansible_os_family == 'RedHat'
 
