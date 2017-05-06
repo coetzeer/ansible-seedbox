@@ -10,18 +10,21 @@ env:
     version: 7
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - distribution: ubuntu
-    version: 14.04
-    init: /sbin/init
-    run_opts: ""
-  - distribution: ubuntu
-    version: 16.04
-    init: /sbin/init
-    run_opts: ""
-  - distribution: ubuntu
-    version: 17.04
-    init: /sbin/init
-    run_opts: ""
+  # hanging?
+  # - distribution: ubuntu
+  #   version: 14.04
+  #   init: /sbin/init
+  #   run_opts: ""
+  # nginx not starting due to systemd
+  # - distribution: ubuntu
+  #   version: 16.04
+  #   init: /sbin/init
+  #   run_opts: ""
+  # nginx not starting due to systemd
+  # - distribution: ubuntu
+  #   version: 17.04
+  #   init: /sbin/init
+  #   run_opts: ""
   - distribution: debian
     version: 8
     init: /sbin/init

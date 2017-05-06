@@ -1,5 +1,12 @@
 ---
-- name: Install libtorrent package only on Raspbian
+- name: Install libtorrent package Debian
+  when: ansible_os_family != 'RedHat'
   package: name={{ item }}
   with_items:
     - libtorrent-dev
+
+- name: Install libtorrent package Redhat
+  when: ansible_os_family == 'RedHat'
+  package: name={{ item }}
+  with_items:
+    - libtorrent
